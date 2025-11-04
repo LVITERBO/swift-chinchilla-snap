@@ -28,7 +28,7 @@ const FinanceDashboard: React.FC = () => {
 
   const currentPeriodData = filteredData.length > 0 ? filteredData[filteredData.length - 1] : undefined;
 
-  const totalRevenue = currentPeriodData ? currentPeriodData.accumulatedRevenue : 0; // Usando receita acumulada
+  const totalRevenue = currentPeriodData ? currentPeriodData.accumulatedRevenue : 0;
   const totalCost = currentPeriodData ? currentPeriodData.totalCost : 0;
   const netProfit = totalRevenue - totalCost;
 
@@ -45,14 +45,8 @@ const FinanceDashboard: React.FC = () => {
   ] : [];
 
   const costDetails = currentPeriodData ? [
-    { label: 'Contabilidade', value: formatCurrency(currentPeriodData.costs.contabilidade) },
-    { label: 'Marca', value: formatCurrency(currentPeriodData.costs.marca) },
-    { label: 'Jurídico', value: formatCurrency(currentPeriodData.costs.juridico) },
-    { label: 'Infraestrutura', value: formatCurrency(currentPeriodData.costs.infraestrutura) },
-    { label: 'Desenvolvimento', value: formatCurrency(currentPeriodData.costs.desenvolvimento) },
-    { label: 'Marketing', value: formatCurrency(currentPeriodData.costs.marketing) },
-    { label: 'Pessoal', value: formatCurrency(currentPeriodData.costs.pessoal) },
-    { label: 'Parcerias', value: formatCurrency(currentPeriodData.costs.parcerias) },
+    { label: 'Custo Total', value: formatCurrency(currentPeriodData.totalCost) },
+    { label: 'Tipo', value: currentPeriodData.isInitialCost ? 'Custo Inicial' : 'Custo Operacional' },
   ] : [];
 
   const profitDetails = currentPeriodData ? [

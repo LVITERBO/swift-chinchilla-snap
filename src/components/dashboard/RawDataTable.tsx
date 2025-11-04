@@ -35,36 +35,26 @@ const RawDataTable: React.FC<RawDataTableProps> = ({ data }) => {
                 <TableHead>Rec. PREMIUM</TableHead>
                 <TableHead>Rec. Total</TableHead>
                 <TableHead>Rec. Acumulada</TableHead>
-                <TableHead>Contabilidade</TableHead>
-                <TableHead>Marca</TableHead>
-                <TableHead>Jurídico</TableHead>
-                <TableHead>Infraestrutura</TableHead>
-                <TableHead>Desenvolvimento</TableHead>
-                <TableHead>Marketing</TableHead>
-                <TableHead>Pessoal</TableHead>
-                <TableHead>Parcerias</TableHead>
                 <TableHead>Custo Total</TableHead>
+                <TableHead>Descrição</TableHead>
                 <TableHead className="text-right">Lucro Líquido</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {data.map((entry) => (
-                <TableRow key={entry.period}>
+                <TableRow key={entry.period} className={entry.isInitialCost ? 'bg-orange-50' : ''}>
                   <TableCell className="font-medium">{entry.period}</TableCell>
                   <TableCell>{entry.totalClients}</TableCell>
                   <TableCell className="text-green-600">{formatCurrency(entry.revenuePlanGold)}</TableCell>
                   <TableCell className="text-green-600">{formatCurrency(entry.revenuePlanPremium)}</TableCell>
                   <TableCell className="text-green-600">{formatCurrency(entry.totalRevenue)}</TableCell>
                   <TableCell className="text-green-600 font-semibold">{formatCurrency(entry.accumulatedRevenue)}</TableCell>
-                  <TableCell className="text-red-600">{formatCurrency(entry.cost_contabilidade)}</TableCell>
-                  <TableCell className="text-red-600">{formatCurrency(entry.cost_marca)}</TableCell>
-                  <TableCell className="text-red-600">{formatCurrency(entry.cost_juridico)}</TableCell>
-                  <TableCell className="text-red-600">{formatCurrency(entry.cost_infraestrutura)}</TableCell>
-                  <TableCell className="text-red-600">{formatCurrency(entry.cost_desenvolvimento)}</TableCell>
-                  <TableCell className="text-red-600">{formatCurrency(entry.cost_marketing)}</TableCell>
-                  <TableCell className="text-red-600">{formatCurrency(entry.cost_pessoal)}</TableCell>
-                  <TableCell className="text-red-600">{formatCurrency(entry.cost_parcerias)}</TableCell>
-                  <TableCell className="text-red-600 font-semibold">{formatCurrency(entry.totalCost)}</TableCell>
+                  <TableCell className={cn("font-semibold", entry.isInitialCost ? 'text-orange-600' : 'text-red-600')}>
+                    {formatCurrency(entry.totalCost)}
+                  </TableCell>
+                  <TableCell className="text-sm text-gray-600">
+                    {entry.costDescription || '-'}
+                  </TableCell>
                   <TableCell className={cn("text-right font-medium", entry.netProfit >= 0 ? 'text-green-600' : 'text-red-600')}>
                     {formatCurrency(entry.netProfit)}
                   </TableCell>

@@ -8,7 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FinanceRecord } from '@/lib/data-processing'; // Usando o novo tipo FinanceRecord
+import { FinanceRecord } from '@/lib/data-processing';
 import { cn } from '@/lib/utils';
 
 interface FinanceTableProps {
@@ -35,16 +35,19 @@ const FinanceTable: React.FC<FinanceTableProps> = ({ data }) => {
             </TableHeader>
             <TableBody>
               {data.map((entry) => (
-                <TableRow key={entry.period}>
-                  <TableCell>{entry.period}</TableCell>
-                  <TableCell className="text-green-600">
-                    R${entry.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                <TableRow key={entry.period} className={entry.isInitialCost ? 'bg-orange-50' : ''}>
+                  <TableCell className="font-medium">
+                    {entry.period}
+                    {entry.isInitialCost && <span className="ml-2 text-xs text-orange-600">(Inicial)</span>}
                   </TableCell>
-                  <TableCell className="text-red-600">
+                  <TableCell className="text-green-600">
+                    R${entry.accumulatedRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </TableCell>
+                  <TableCell className={cn(entry.isInitialCost ? 'text-orange-600' : 'text-red-600')}>
                     R${entry.totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
-                  <TableCell className={cn("text-right font-medium", (entry.totalRevenue - entry.totalCost) >= 0 ? 'text-green-600' : 'text-red-600')}>
-                    R${(entry.totalRevenue - entry.totalCost).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  <TableCell className={cn("text-right font-medium", (entry.accumulatedRevenue - entry.totalCost) >= 0 ? 'text-green-600' : 'text-red-600')}>
+                    R${(entry.accumulatedRevenue - entry.totalCost).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
                 </TableRow>
               ))}
