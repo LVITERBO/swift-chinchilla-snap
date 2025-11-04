@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-import { ChartData } from '@/lib/data-processing'; // Usando o novo tipo ChartData
+import { ChartData } from '@/lib/data-processing';
 
 interface RevenueCostChartProps {
   data: ChartData[];
@@ -37,8 +37,8 @@ const RevenueCostChart: React.FC<RevenueCostChartProps> = ({ data }) => {
                 formatter={(value: number) => `R$${value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                 labelFormatter={(label: string) => `Mês: ${label}`}
               />
-              <Legend payload={[{ value: 'Receita', type: 'rect', id: 'receita', color: 'hsl(var(--primary))' }, { value: 'Custo', type: 'rect', id: 'custo', color: 'hsl(var(--destructive))' }]} />
-              <Bar dataKey="receita" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Receita" />
+              <Legend payload={[{ value: 'Receita', type: 'rect', id: 'receita', color: 'hsl(142.1 76.2% 36.3%)' }, { value: 'Custo', type: 'rect', id: 'custo', color: 'hsl(var(--destructive))' }]} />
+              <Bar dataKey="receita" fill="hsl(142.1 76.2% 36.3%)" radius={[4, 4, 0, 0]} name="Receita" />
               <Bar dataKey="custo" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} name="Custo" />
             </BarChart>
           </ResponsiveContainer>
