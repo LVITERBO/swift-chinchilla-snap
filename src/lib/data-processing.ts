@@ -1,22 +1,22 @@
-import { parse } from 'csv-parse/browser/esm/sync'; // Alterado para a versão de navegador
+import { parse } from 'csv-parse/browser/esm/sync';
 
 // Conteúdo do seu arquivo CSV
 const CSV_CONTENT = `﻿;Receitas;;;;;;;;;;;;;;;;;Resltado_Custos;;;Contabilidade;Marca;Jurídico;Infraestrutura;Desenvolvimento;Desenvolvimento;Infraestrutura;Infraestrutura;Marketing;Marketing;Pessoal;Parcerias;Parcerias;Marketing;MKT 
 ;;;60,00%;10,00%;30,00%;;;;;Incremento Mensal de  Clientes;Planos / Preços;;Planos / Preços;Planos / Preços;Planos / Preços;Planos / Preços;;Período;;Conta;Kadmus ;Marca;Lima Jr;Registro BR;YouX;Digital Circle;Google;Microsoft Azure;Just Liv;Bendita Letra;Luciano;LINA;VINDI;Site / Redes Sociais;Tráfego PG | Impulso
 ;;CLIENTES;%  Clientes Plano  (START);% Clientes Plano (GOLD);% Clientes Plano (PREMIUM);Receita Plano GOLD ;Receita Plano PREMIUM;Receita Total (R$);Receita Acumulada;20,00%;;Receita ALVO > Custo;Preço Plano 0 - (START)  ;Preço Plano (PREMIUM);Preço Plano ( GOLD);Proporção (G / P );;Jan/24 | Set/25_Custos Iniciais (não recuperáveis)_Sunk Costs;202.747;202.747;;;;;;;;;;;;;;;
-;out/25;0;;;;;;;R$ 0,00;;out/25;R$ 36.378,80;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;out/25;36.379;239.126;220;;;40;;26.334;185;2.500;1.000;2.500;3.000;;;600;
-;nov/25;0;;;;;;;R$ 0,00;;nov/25;R$ 38.459,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;nov/25;38.459;277.585;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;1.999;;5.000
-;dez/25;412;257;51;103;R$ 15.349,00;R$ 30.801,00;R$ 46.150,00;R$ 46.150,00;;dez/25;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;dez/25;36.959;314.544;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;jan/26;494;309;62;124;R$ 36.961,21;R$ 9.178,60;R$ 46.139,80;R$ 92.289,80;;jan/26;R$ 36.919,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;jan/26;36.919;351.463;220;;;;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;fev/26;593;370;74;148;R$ 44.353,45;R$ 11.014,32;R$ 55.367,76;R$ 147.657,56;;fev/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;fev/26;36.959;388.422;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;mar/26;711;445;89;178;R$ 53.224,14;R$ 13.217,18;R$ 66.441,31;R$ 214.098,88;;mar/26;R$ 36.919,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;mar/26;36.919;425.341;220;;;;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;abr/26;853;533;106;214;R$ 63.868,96;R$ 15.860,62;R$ 79.729,58;R$ 293.828,46;;abr/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;abr/26;36.959;462.300;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;mai/26;1024;640;128;256;R$ 76.642,76;R$ 19.032,74;R$ 95.675,49;R$ 389.503,95;;mai/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;mai/26;36.959;499.259;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;jun/26;1229;768;153;308;R$ 91.971,31;R$ 22.839,29;R$ 114.810,59;R$ 504.314,54;;jun/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;jun/26;36.959;536.218;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;jul/26;1475;922;184;369;R$ 110.365,57;R$ 27.407,14;R$ 137.772,71;R$ 642.087,25;;jul/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;jul/26;36.959;573.177;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;ago/26;1770;1106;221;443;R$ 132.438,68;R$ 32.888,57;R$ 165.327,25;R$ 807.414,51;;ago/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;ago/26;36.959;610.136;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;set/26;2124;1327;265;532;R$ 158.926,42;R$ 39.466,29;R$ 198.392,70;R$ 1.005.807,21;;set/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;set/26;36.959;647.095;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;out/26;2548;1593;318;638;R$ 190.711,70;R$ 47.359,54;R$ 238.071,24;R$ 1.243.878,45;;out/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;out/26;36.959;R$ 684.053,51;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;out/25;0;;;;;;;R$ 0,00;R$ 0,00;out/25;R$ 36.378,80;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;out/25;36.379;239.126;220;;;40;;26.334;185;2.500;1.000;2.500;3.000;;;600;
+;nov/25;0;;;;;;;R$ 0,00;R$ 0,00;nov/25;R$ 38.459,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;nov/25;38.459;277.585;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;1.999;;5.000
+;dez/25;412;257;51;103;R$ 15.349,00;R$ 30.801,00;R$ 46.150,00;R$ 46.150,00;dez/25;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;dez/25;36.959;314.544;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;jan/26;494;309;62;124;R$ 36.961,21;R$ 9.178,60;R$ 46.139,80;R$ 92.289,80;jan/26;R$ 36.919,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;jan/26;36.919;351.463;220;;;;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;fev/26;593;370;74;148;R$ 44.353,45;R$ 11.014,32;R$ 55.367,76;R$ 147.657,56;fev/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;fev/26;36.959;388.422;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;mar/26;711;445;89;178;R$ 53.224,14;R$ 13.217,18;R$ 66.441,31;R$ 214.098,88;mar/26;R$ 36.919,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;mar/26;36.919;425.341;220;;;;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;abr/26;853;533;106;214;R$ 63.868,96;R$ 15.860,62;R$ 79.729,58;R$ 293.828,46;abr/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;abr/26;36.959;462.300;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;mai/26;1024;640;128;256;R$ 76.642,76;R$ 19.032,74;R$ 95.675,49;R$ 389.503,95;mai/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;mai/26;36.959;499.259;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;jun/26;1229;768;153;308;R$ 91.971,31;R$ 22.839,29;R$ 114.810,59;R$ 504.314,54;jun/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;jun/26;36.959;536.218;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;jul/26;1475;922;184;369;R$ 110.365,57;R$ 27.407,14;R$ 137.772,71;R$ 642.087,25;jul/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;jul/26;36.959;573.177;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;ago/26;1770;1106;221;443;R$ 132.438,68;R$ 32.888,57;R$ 165.327,25;R$ 807.414,51;ago/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;ago/26;36.959;610.136;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;set/26;2124;1327;265;532;R$ 158.926,42;R$ 39.466,29;R$ 198.392,70;R$ 1.005.807,21;set/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;set/26;36.959;647.095;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;out/26;2548;1593;318;638;R$ 190.711,70;R$ 47.359,54;R$ 238.071,24;R$ 1.243.878,45;out/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;out/26;36.959;R$ 684.053,51;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -24,13 +24,14 @@ const CSV_CONTENT = `﻿;Receitas;;;;;;;;;;;;;;;;;Resltado_Custos;;;Contabilidad
 ;;;;225;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;`;
 
 export interface FinanceRecord {
-  period: string; // e.g., "out/25"
-  month: string; // e.g., "out"
-  year: number; // e.g., 2025
+  period: string;
+  month: string;
+  year: number;
   totalClients: number;
   revenuePlanGold: number;
   revenuePlanPremium: number;
   totalRevenue: number;
+  accumulatedRevenue: number;
   totalCost: number;
   costs: {
     contabilidade: number;
@@ -51,10 +52,29 @@ export type ChartData = {
   custo: number;
 };
 
+export type RawTableData = {
+  period: string;
+  totalClients: number;
+  revenuePlanGold: number;
+  revenuePlanPremium: number;
+  totalRevenue: number;
+  accumulatedRevenue: number;
+  cost_contabilidade: number;
+  cost_marca: number;
+  cost_juridico: number;
+  cost_infraestrutura: number;
+  cost_desenvolvimento: number;
+  cost_marketing: number;
+  cost_pessoal: number;
+  cost_parcerias: number;
+  totalCost: number;
+  netProfit: number;
+};
+
 function parseNumber(value: string | undefined): number {
   if (!value) return 0;
   let cleanedValue = value.replace(/R\$/g, '').replace(/\s/g, '').replace(/%/g, '');
-  cleanedValue = cleanedValue.replace(/\./g, '').replace(/,/g, '.'); // Handle thousands separator and decimal comma
+  cleanedValue = cleanedValue.replace(/\./g, '').replace(/,/g, '.');
   const parsed = parseFloat(cleanedValue);
   return isNaN(parsed) ? 0 : parsed;
 }
@@ -62,47 +82,47 @@ function parseNumber(value: string | undefined): number {
 export const parseCsvData = (): FinanceRecord[] => {
   const records = parse(CSV_CONTENT, {
     delimiter: ';',
-    from_line: 4, // Data starts from the 4th line
-    relax_column_count: true, // Allow rows to have different number of columns
+    from_line: 4,
+    relax_column_count: true,
   });
 
   const financeData: FinanceRecord[] = [];
-  const SUNK_COST_MARCA = 202747; // Valor dos custos iniciais de Marca (R$202.747)
-  let previousMarcaCumulative = SUNK_COST_MARCA; // Inicializa com o custo afundado como linha de base
+  const SUNK_COST_MARCA = 202747;
+  let previousMarcaCumulative = SUNK_COST_MARCA;
 
   records.forEach((row: string[]) => {
-    const periodRaw = row[1]?.trim(); // Column B
-    if (!periodRaw || periodRaw.includes('#DIV/0!')) return; // Skip empty or error rows
+    const periodRaw = row[1]?.trim();
+    if (!periodRaw || periodRaw.includes('#DIV/0!')) return;
 
     const [monthAbbr, yearAbbr] = periodRaw.split('/');
-    const year = 2000 + parseInt(yearAbbr, 10); // Assuming years like 25 -> 2025
+    const year = 2000 + parseInt(yearAbbr, 10);
 
-    const revenuePlanGold = parseNumber(row[6]); // Column G
-    const revenuePlanPremium = parseNumber(row[7]); // Column H
-    const totalRevenue = parseNumber(row[8]); // Column I
+    const revenuePlanGold = parseNumber(row[6]);
+    const revenuePlanPremium = parseNumber(row[7]);
+    const totalRevenue = parseNumber(row[8]);
+    const accumulatedRevenue = parseNumber(row[9]); // Coluna J - Receita Acumulada
 
-    // Colunas de custo corrigidas (começando da coluna S, que é row[18])
-    const cost_contabilidade = parseNumber(row[18]); // Column S
-    const currentMarcaCumulative = parseNumber(row[19]); // Column T (valor cumulativo da Marca)
-    const cost_juridico = parseNumber(row[20]); // Column U
-    const cost_infraestrutura_1 = parseNumber(row[21]); // Column V
-    const cost_desenvolvimento_1 = parseNumber(row[22]); // Column W
-    const cost_desenvolvimento_2 = parseNumber(row[23]); // Column X
-    const cost_infraestrutura_2 = parseNumber(row[24]); // Column Y
-    const cost_marketing_1 = parseNumber(row[25]); // Column Z
-    const cost_pessoal = parseNumber(row[26]); // Column AA
-    const cost_parcerias_1 = parseNumber(row[27]); // Column AB
-    const cost_marketing_2 = parseNumber(row[28]); // Column AC
-    const cost_parcerias_2 = parseNumber(row[29]); // Column AD
-    const cost_mkt = parseNumber(row[30]); // Column AE
+    // Colunas de custo
+    const cost_contabilidade = parseNumber(row[18]);
+    const currentMarcaCumulative = parseNumber(row[19]);
+    const cost_juridico = parseNumber(row[20]);
+    const cost_infraestrutura_1 = parseNumber(row[21]);
+    const cost_desenvolvimento_1 = parseNumber(row[22]);
+    const cost_desenvolvimento_2 = parseNumber(row[23]);
+    const cost_infraestrutura_2 = parseNumber(row[24]);
+    const cost_marketing_1 = parseNumber(row[25]);
+    const cost_pessoal = parseNumber(row[26]);
+    const cost_parcerias_1 = parseNumber(row[27]);
+    const cost_marketing_2 = parseNumber(row[28]);
+    const cost_parcerias_2 = parseNumber(row[29]);
+    const cost_mkt = parseNumber(row[30]);
 
-    // Calcular o custo mensal da Marca, subtraindo o valor cumulativo anterior
     const cost_marca_monthly = Math.max(0, currentMarcaCumulative - previousMarcaCumulative);
-    previousMarcaCumulative = currentMarcaCumulative; // Atualiza o valor cumulativo para a próxima iteração
+    previousMarcaCumulative = currentMarcaCumulative;
 
     const totalCost =
       cost_contabilidade +
-      cost_marca_monthly + // Usar o custo mensal ajustado da Marca
+      cost_marca_monthly +
       cost_juridico +
       cost_infraestrutura_1 +
       cost_infraestrutura_2 +
@@ -119,21 +139,22 @@ export const parseCsvData = (): FinanceRecord[] => {
       period: periodRaw,
       month: monthAbbr,
       year: year,
-      totalClients: parseNumber(row[2]), // Column C
+      totalClients: parseNumber(row[2]),
       revenuePlanGold: revenuePlanGold,
       revenuePlanPremium: revenuePlanPremium,
       totalRevenue: totalRevenue,
+      accumulatedRevenue: accumulatedRevenue, // Usando o valor acumulado da planilha
       totalCost: totalCost,
       costs: {
         contabilidade: cost_contabilidade,
-        marca: cost_marca_monthly, // Armazenar o custo mensal ajustado da Marca
+        marca: cost_marca_monthly,
         juridico: cost_juridico,
         infraestrutura: cost_infraestrutura_1 + cost_infraestrutura_2,
         desenvolvimento: cost_desenvolvimento_1 + cost_desenvolvimento_2,
         marketing: cost_marketing_1 + cost_marketing_2 + cost_mkt,
         pessoal: cost_pessoal,
         parcerias: cost_parcerias_1 + cost_parcerias_2,
-        mkt: cost_mkt, // Keeping MKT separate for now, but it's also part of marketing total
+        mkt: cost_mkt,
       },
     });
   });
@@ -141,10 +162,31 @@ export const parseCsvData = (): FinanceRecord[] => {
   return financeData;
 };
 
+export const getRawTableData = (data: FinanceRecord[]): RawTableData[] => {
+  return data.map(entry => ({
+    period: entry.period,
+    totalClients: entry.totalClients,
+    revenuePlanGold: entry.revenuePlanGold,
+    revenuePlanPremium: entry.revenuePlanPremium,
+    totalRevenue: entry.totalRevenue,
+    accumulatedRevenue: entry.accumulatedRevenue,
+    cost_contabilidade: entry.costs.contabilidade,
+    cost_marca: entry.costs.marca,
+    cost_juridico: entry.costs.juridico,
+    cost_infraestrutura: entry.costs.infraestrutura,
+    cost_desenvolvimento: entry.costs.desenvolvimento,
+    cost_marketing: entry.costs.marketing,
+    cost_pessoal: entry.costs.pessoal,
+    cost_parcerias: entry.costs.parcerias,
+    totalCost: entry.totalCost,
+    netProfit: entry.accumulatedRevenue - entry.totalCost,
+  }));
+};
+
 export const getChartData = (data: FinanceRecord[]): ChartData[] => {
   return data.map(entry => ({
     month: entry.period,
-    receita: entry.totalRevenue,
+    receita: entry.accumulatedRevenue, // Usando receita acumulada no gráfico
     custo: entry.totalCost,
   }));
 };

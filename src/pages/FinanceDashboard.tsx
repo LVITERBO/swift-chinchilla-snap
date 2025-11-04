@@ -2,10 +2,13 @@ import React from 'react';
 import OverviewCard from '@/components/dashboard/OverviewCard';
 import RevenueCostChart from '@/components/dashboard/RevenueCostChart';
 import FinanceTable from '@/components/dashboard/FinanceTable';
-import { parseCsvData, getChartData, getUniqueMonths, getUniqueYears, FinanceRecord } from '@/lib/data-processing';
-import { DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
+import RawDataTable from '@/components/dashboard/RawDataTable';
+import DetailModal from '@/components/ui/detail-modal';
+import { parseCsvData, getChartData, getUniqueMonths, getUniqueYears, FinanceRecord, getRawTableData, RawTableData } from '@/lib/data-processing';
+import { DollarSign, TrendingUp, TrendingDown, Table } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const FinanceDashboard: React.FC = () => {
   const allFinanceData = React.useMemo(() => parseCsvData(), []);
@@ -25,17 +28,20 @@ const FinanceDashboard: React.FC = () => {
 
   const currentPeriodData = filteredData.length > 0 ? filteredData[filteredData.length - 1] : undefined;
 
-  const totalRevenue = currentPeriodData ? currentPeriodData.totalRevenue : 0;
+  const totalRevenue = currentPeriodData ? currentPeriodData.accumulatedRevenue : 0; // Usando receita acumulada
   const totalCost = currentPeriodData ? currentPeriodData.totalCost : 0;
   const netProfit = totalRevenue - totalCost;
 
   const chartData = React.useMemo(() => getChartData(filteredData), [filteredData]);
+  const rawTableData = React.useMemo(() => getRawTableData(filteredData), [filteredData]);
 
   const formatCurrency = (value: number) => `R$${value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   const revenueDetails = currentPeriodData ? [
     { label: 'Plano GOLD', value: formatCurrency(currentPeriodData.revenuePlanGold) },
     { label: 'Plano PREMIUM', value: formatCurrency(currentPeriodData.revenuePlanPremium) },
+    { label: 'Receita Mensal', value: formatCurrency(currentPeriodData.totalRevenue) },
+    { label: 'Receita Acumulada', value: formatCurrency(currentPeriodData.accumulatedRevenue) },
   ] : [];
 
   const costDetails = currentPeriodData ? [
@@ -50,8 +56,9 @@ const FinanceDashboard: React.FC = () => {
   ] : [];
 
   const profitDetails = currentPeriodData ? [
-    { label: 'Receita Total', value: formatCurrency(totalRevenue) },
+    { label: 'Receita Acumulada', value: formatCurrency(totalRevenue) },
     { label: 'Custo Total', value: formatCurrency(totalCost) },
+    { label: 'Lucro Líquido', value: formatCurrency(netProfit) },
   ] : [];
 
   return (
@@ -90,38 +97,63 @@ const FinanceDashboard: React.FC = () => {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
-        <OverviewCard
-          title="Receita Total"
-          value={formatCurrency(totalRevenue)}
-          description="Receita gerada em todas as operações."
-          icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
-          detailData={revenueDetails}
-        />
-        <OverviewCard
-          title="Custo Total"
-          value={formatCurrency(totalCost)}
-          description="Total de despesas incorridas."
-          icon={<TrendingDown className="h-4 w-4 text-muted-foreground" />}
-          detailData={costDetails}
-        />
-        <OverviewCard
-          title="Lucro Líquido"
-          value={formatCurrency(netProfit)}
-          description="Receita menos custo."
-          icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
-          detailData={profitDetails}
-        />
+        <DetailModal
+          title="Detalhes da Receita"
+          description="Breakdown completo da receita por período"
+          data={rawTableData}
+        >
+          <OverviewCard
+            title="Receita Acumulada"
+            value={formatCurrency(totalRevenue)}
+            description="Receita acumulada no período."
+            icon={<DollarSign className="h-4 w-4 text-muted-foreground" />}
+          />
+        </DetailModal>
+
+        <DetailModal
+          title="Detalhes dos Custos"
+          description="Breakdown completo dos custos por período"
+          data={rawTableData}
+        >
+          <OverviewCard
+            title="Custo Total"
+            value={formatCurrency(totalCost)}
+            description="Total de despesas incorridas."
+            icon={<TrendingDown className="h-4 w-4 text-muted-foreground" />}
+          />
+        </DetailModal>
+
+        <DetailModal
+          title="Detalhes do Lucro"
+          description="Breakdown completo do lucro por período"
+          data={rawTableData}
+        >
+          <OverviewCard
+            title="Lucro Líquido"
+            value={formatCurrency(netProfit)}
+            description="Receita acumulada menos custo."
+            icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
+          />
+        </DetailModal>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2 mb-6">
         <RevenueCostChart data={chartData} />
-        <FinanceTable data={filteredData.slice(-10).reverse()} /> {/* Exibe os 10 períodos mais recentes */}
+        <FinanceTable data={filteredData.slice(-10).reverse()} />
       </div>
 
-      <div className="mt-6">
-        <h2 className="text-2xl font-bold mb-4">Todos os Períodos</h2>
-        <FinanceTable data={filteredData.reverse()} />
-      </div>
+      <Tabs defaultValue="summary" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="summary">Resumo</TabsTrigger>
+          <TabsTrigger value="detailed">Tabela Detalhada</TabsTrigger>
+        </TabsList>
+        <TabsContent value="summary" className="space-y-4">
+          <FinanceTable data={filteredData.reverse()} />
+        </TabsContent>
+        <TabsContent value="detailed" className="space-y-4">
+          <RawDataTable data={rawTableData} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
