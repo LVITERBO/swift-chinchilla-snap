@@ -28,6 +28,9 @@ export interface FinanceRecord {
   month: string;
   year: number;
   totalClients: number;
+  clientsPlanStart: number; // Novo campo para % Clientes Plano (START)
+  clientsPlanGold: number;   // Novo campo para % Clientes Plano (GOLD)
+  clientsPlanPremium: number; // Novo campo para % Clientes Plano (PREMIUM)
   revenuePlanGold: number;
   revenuePlanPremium: number;
   totalRevenue: number;
@@ -48,6 +51,9 @@ export type ChartData = {
 export type RawTableData = {
   period: string;
   totalClients: number;
+  clientsPlanStart: number; // Novo campo para % Clientes Plano (START)
+  clientsPlanGold: number;   // Novo campo para % Clientes Plano (GOLD)
+  clientsPlanPremium: number; // Novo campo para % Clientes Plano (PREMIUM)
   revenuePlanGold: number;
   revenuePlanPremium: number;
   totalRevenue: number;
@@ -90,6 +96,9 @@ export const parseCsvData = (csvContent: string = DEFAULT_CSV_CONTENT): FinanceR
     month: 'Inicial',
     year: 2024,
     totalClients: 0,
+    clientsPlanStart: 0,
+    clientsPlanGold: 0,
+    clientsPlanPremium: 0,
     revenuePlanGold: 0,
     revenuePlanPremium: 0,
     totalRevenue: 0,
@@ -142,6 +151,9 @@ export const parseCsvData = (csvContent: string = DEFAULT_CSV_CONTENT): FinanceR
       month: monthAbbr,
       year: year,
       totalClients: parseNumber(row[2]),
+      clientsPlanStart: parseNumber(row[3]), // Coluna D
+      clientsPlanGold: parseNumber(row[4]),  // Coluna E
+      clientsPlanPremium: parseNumber(row[5]), // Coluna F
       revenuePlanGold: revenuePlanGold,
       revenuePlanPremium: revenuePlanPremium,
       totalRevenue: totalRevenue,
@@ -171,6 +183,9 @@ export const getRawTableData = (data: FinanceRecord[]): RawTableData[] => {
   return data.map(entry => ({
     period: entry.period,
     totalClients: entry.totalClients,
+    clientsPlanStart: entry.clientsPlanStart, // Mapeando novo campo
+    clientsPlanGold: entry.clientsPlanGold,   // Mapeando novo campo
+    clientsPlanPremium: entry.clientsPlanPremium, // Mapeando novo campo
     revenuePlanGold: entry.revenuePlanGold,
     revenuePlanPremium: entry.revenuePlanPremium,
     totalRevenue: entry.totalRevenue,

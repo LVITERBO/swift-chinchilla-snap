@@ -31,6 +31,9 @@ const RawDataTable: React.FC<RawDataTableProps> = ({ data }) => {
               <TableRow>
                 <TableHead>Período</TableHead>
                 <TableHead>Clientes</TableHead>
+                <TableHead>START</TableHead> {/* Nova coluna */}
+                <TableHead>GOLD</TableHead>  {/* Nova coluna */}
+                <TableHead>PREMIUM</TableHead> {/* Nova coluna */}
                 <TableHead>Rec. GOLD</TableHead>
                 <TableHead>Rec. PREMIUM</TableHead>
                 <TableHead>Rec. Total</TableHead>
@@ -46,6 +49,9 @@ const RawDataTable: React.FC<RawDataTableProps> = ({ data }) => {
                 <TableRow key={entry.period} className={entry.isInitialCost ? 'bg-orange-50' : ''}>
                   <TableCell className="font-medium">{entry.period}</TableCell>
                   <TableCell>{entry.totalClients}</TableCell>
+                  <TableCell>{entry.clientsPlanStart}</TableCell> {/* Exibindo novo dado */}
+                  <TableCell>{entry.clientsPlanGold}</TableCell>  {/* Exibindo novo dado */}
+                  <TableCell>{entry.clientsPlanPremium}</TableCell> {/* Exibindo novo dado */}
                   <TableCell className="text-green-600">{formatCurrency(entry.revenuePlanGold)}</TableCell>
                   <TableCell className="text-green-600">{formatCurrency(entry.revenuePlanPremium)}</TableCell>
                   <TableCell className="text-green-600">{formatCurrency(entry.totalRevenue)}</TableCell>
