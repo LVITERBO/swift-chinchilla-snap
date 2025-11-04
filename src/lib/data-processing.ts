@@ -84,7 +84,7 @@ export const parseCsvData = (): FinanceRecord[] => {
 
   // Adicionar custos iniciais como um registro separado
   financeData.push({
-    period: 'Jan/24 - Set/25',
+    period: 'Jan/24 | Set/25',
     month: 'Inicial',
     year: 2024,
     totalClients: 0,
@@ -97,6 +97,23 @@ export const parseCsvData = (): FinanceRecord[] => {
     costDescription: 'Custos Iniciais (Sunk Costs)',
     sortDate: new Date(2024, 0, 1)
   });
+
+  // Mapeamento manual dos custos totais conforme tabela fornecida
+  const costMapping: { [key: string]: number } = {
+    'out/25': 36379,
+    'nov/25': 38459,
+    'dez/25': 36959,
+    'jan/26': 36919,
+    'fev/26': 36959,
+    'mar/26': 36919,
+    'abr/26': 36959,
+    'mai/26': 36959,
+    'jun/26': 36959,
+    'jul/26': 36959,
+    'ago/26': 36959,
+    'set/26': 36959,
+    'out/26': 36959
+  };
 
   records.forEach((row: string[]) => {
     const periodRaw = row[1]?.trim();
@@ -111,8 +128,8 @@ export const parseCsvData = (): FinanceRecord[] => {
     const totalRevenue = parseNumber(row[8]);
     const accumulatedRevenue = parseNumber(row[9]);
 
-    // Usar a coluna T (índice 19) para o custo total
-    const totalCost = parseNumber(row[19]);
+    // Usar o mapeamento manual para garantir valores exatos
+    const totalCost = costMapping[periodRaw] || 0;
 
     financeData.push({
       period: periodRaw,
