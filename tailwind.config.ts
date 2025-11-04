@@ -19,6 +19,13 @@ export default {
     },
     extend: {
       colors: {
+        'arvoh-blue': {
+          DEFAULT: 'hsl(210 100% 15%)', // Main background blue
+          light: 'hsl(210 100% 45%)', // Primary action blue
+          dark: 'hsl(210 100% 10%)', // Even darker blue for sidebar
+          muted: 'hsl(210 10% 80%)', // Light gray for secondary/muted elements
+          'muted-foreground': 'hsl(210 100% 25%)', // Dark blue for muted text
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

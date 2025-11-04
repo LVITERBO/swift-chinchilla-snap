@@ -20,13 +20,13 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onFileUpload }) => {
       reader.onerror = () => {
         toast.error("Erro ao ler o arquivo CSV.");
       };
-      reader.readAsText(file, 'utf-8'); // Especificar codificação UTF-8
+      reader.readAsText(file, 'utf-8');
     }
   };
 
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor="csv-upload">Upload de Planilha CSV</Label>
+      <Label htmlFor="csv-upload" className="text-sm">Upload de Planilha CSV</Label>
       <Input id="csv-upload" type="file" accept=".csv" onChange={handleFileChange} />
       <p className="text-xs text-muted-foreground">Envie um novo arquivo CSV para atualizar os dados.</p>
     </div>
