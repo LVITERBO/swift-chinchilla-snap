@@ -19,38 +19,38 @@ const FinanceTable: React.FC<FinanceTableProps> = ({ data }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Transações Recentes</CardTitle>
-        <CardDescription className="text-xs">Uma visão detalhada das suas últimas atividades financeiras.</CardDescription>
+        <CardTitle className="text-lg">Transações Recentes</CardTitle>
+        <CardDescription className="text-sm">Uma visão detalhada das suas últimas atividades financeiras.</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="max-h-[400px] overflow-y-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-xs">Período</TableHead>
-                <TableHead className="text-xs">Receita Total</TableHead>
-                <TableHead className="text-xs">Custo Mensal</TableHead>
-                <TableHead className="text-xs">Custo Acumulado</TableHead>
-                <TableHead className="text-right text-xs">Lucro Líquido</TableHead>
+                <TableHead>Período</TableHead>
+                <TableHead>Receita Total</TableHead>
+                <TableHead>Custo Mensal</TableHead>
+                <TableHead>Custo Acumulado</TableHead>
+                <TableHead className="text-right">Lucro Líquido</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {data.map((entry) => (
                 <TableRow key={entry.period} className={entry.isInitialCost ? 'bg-orange-50' : ''}>
-                  <TableCell className="font-medium text-sm">
+                  <TableCell className="font-medium">
                     {entry.period}
                     {entry.isInitialCost && <span className="ml-2 text-xs text-orange-600">(Inicial)</span>}
                   </TableCell>
-                  <TableCell className="text-green-600 text-sm">
+                  <TableCell className="text-green-600">
                     R${entry.accumulatedRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
-                  <TableCell className={cn("text-sm", entry.isInitialCost ? 'text-orange-600' : 'text-red-600')}>
+                  <TableCell className={cn(entry.isInitialCost ? 'text-orange-600' : 'text-red-600')}>
                     R${entry.monthlyCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
-                  <TableCell className={cn("font-semibold text-sm", entry.isInitialCost ? 'text-orange-600' : 'text-red-600')}>
+                  <TableCell className={cn("font-semibold", entry.isInitialCost ? 'text-orange-600' : 'text-red-600')}>
                     R${entry.accumulatedCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
-                  <TableCell className={cn("text-right font-medium text-sm", (entry.accumulatedRevenue - entry.accumulatedCost) >= 0 ? 'text-green-600' : 'text-red-600')}>
+                  <TableCell className={cn("text-right font-medium", (entry.accumulatedRevenue - entry.accumulatedCost) >= 0 ? 'text-green-600' : 'text-red-600')}>
                     R${(entry.accumulatedRevenue - entry.accumulatedCost).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
                 </TableRow>

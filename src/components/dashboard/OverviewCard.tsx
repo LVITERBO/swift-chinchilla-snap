@@ -19,11 +19,11 @@ const OverviewCard: React.FC<OverviewCardProps> = ({ title, value, description, 
       {...props}
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-xs font-medium">{title}</CardTitle>
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
         {icon}
       </CardHeader>
       <CardContent className="flex-grow flex flex-col justify-between">
-        <div className={cn("text-xl font-bold", valueClassName)}>{value}</div>
+        <div className={cn("text-2xl font-bold", valueClassName)}>{value}</div>
         <p className="text-xs text-muted-foreground mt-1">{description}</p>
       </CardContent>
     </Card>

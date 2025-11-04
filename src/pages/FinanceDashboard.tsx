@@ -112,16 +112,13 @@ const FinanceDashboard: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="container mx-auto p-4 sm:p-6 lg:p-8 flex-grow">
-        <div className="flex items-center gap-4 mb-6">
-          <img src="/arvoh-logo-mini.png" alt="ARVOH Logo" className="h-10 w-auto" />
-          <h1 className="text-2xl font-bold">Painel Financeiro_ARVOH_Receita X Custos</h1>
-        </div>
+        <h1 className="text-3xl font-bold mb-6">Painel Financeiro_ARVOH_Receita X Custos</h1>
 
         <div className="flex flex-wrap gap-4 mb-6">
           <div>
-            <Label htmlFor="select-month" className="text-sm">Filtrar por Mês</Label>
+            <Label htmlFor="select-month">Filtrar por Mês</Label>
             <Select onValueChange={setSelectedMonth} value={selectedMonth}>
-              <SelectTrigger id="select-month" className="w-[180px] text-sm">
+              <SelectTrigger id="select-month" className="w-[180px]">
                 <SelectValue placeholder="Todos os Meses" />
               </SelectTrigger>
               <SelectContent>
@@ -135,9 +132,9 @@ const FinanceDashboard: React.FC = () => {
             </Select>
           </div>
           <div>
-            <Label htmlFor="select-year" className="text-sm">Filtrar por Ano</Label>
+            <Label htmlFor="select-year">Filtrar por Ano</Label>
             <Select onValueChange={setSelectedYear} value={selectedYear}>
-              <SelectTrigger id="select-year" className="w-[180px] text-sm">
+              <SelectTrigger id="select-year" className="w-[180px]">
                 <SelectValue placeholder="Todos os Anos" />
               </SelectTrigger>
               <SelectContent>
@@ -195,7 +192,7 @@ const FinanceDashboard: React.FC = () => {
             value={breakEvenMonth}
             description="Mês em que a receita acumulada supera o custo acumulado."
             icon={<Target className="h-4 w-4 text-muted-foreground" />}
-            valueClassName="text-arvoh-blue-light"
+            valueClassName="text-blue-600 dark:text-blue-400"
             onClick={() => {
               setActiveTab("detailed");
               setSelectedMonth("jul");

@@ -11,8 +11,8 @@ const RevenueCostChart: React.FC<RevenueCostChartProps> = ({ data }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Receita vs. Custo</CardTitle>
-        <CardDescription className="text-xs">Visão geral mensal do seu desempenho financeiro.</CardDescription>
+        <CardTitle className="text-lg">Receita vs. Custo</CardTitle>
+        <CardDescription className="text-sm">Visão geral mensal do seu desempenho financeiro.</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[350px]">

@@ -26,9 +26,9 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onFileUpload }) => {
 
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor="csv-upload" className="text-sm">Upload de Planilha CSV</Label>
+      <Label htmlFor="csv-upload">Upload de Planilha CSV</Label>
       <Input id="csv-upload" type="file" accept=".csv" onChange={handleFileChange} />
-      <p className="text-xs text-muted-foreground">Envie um novo arquivo CSV para atualizar os dados.</p>
+      <p className="text-muted-foreground">Envie um novo arquivo CSV para atualizar os dados.</p>
     </div>
   );
 };
