@@ -55,6 +55,21 @@ const FinanceDashboard: React.FC = () => {
     { label: 'Lucro Líquido', value: formatCurrency(netProfit) },
   ] : [];
 
+  const monthDisplayNames: { [key: string]: string } = {
+    'jan': 'Janeiro',
+    'fev': 'Fevereiro',
+    'mar': 'Março',
+    'abr': 'Abril',
+    'mai': 'Maio',
+    'jun': 'Junho',
+    'jul': 'Julho',
+    'ago': 'Agosto',
+    'set': 'Setembro',
+    'out': 'Outubro',
+    'nov': 'Novembro',
+    'dez': 'Dezembro'
+  };
+
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <h1 className="text-3xl font-bold mb-6">Painel Financeiro</h1>
@@ -69,7 +84,9 @@ const FinanceDashboard: React.FC = () => {
             <SelectContent>
               <SelectItem value="all">Todos os Meses</SelectItem>
               {uniqueMonths.map(month => (
-                <SelectItem key={month} value={month}>{month.toUpperCase()}</SelectItem>
+                <SelectItem key={month} value={month}>
+                  {monthDisplayNames[month] || month.toUpperCase()}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>

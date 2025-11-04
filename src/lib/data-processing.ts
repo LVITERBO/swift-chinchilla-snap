@@ -35,7 +35,7 @@ export interface FinanceRecord {
   totalCost: number;
   isInitialCost: boolean;
   costDescription?: string;
-  sortDate: Date; // Nova propriedade para ordenação correta
+  sortDate: Date;
 }
 
 export type ChartData = {
@@ -65,7 +65,6 @@ function parseNumber(value: string | undefined): number {
   return isNaN(parsed) ? 0 : parsed;
 }
 
-// Função para converter mês abreviado para número
 function getMonthNumber(monthAbbr: string): number {
   const months: { [key: string]: number } = {
     'jan': 0, 'fev': 1, 'mar': 2, 'abr': 3, 'mai': 4, 'jun': 5,
@@ -96,7 +95,7 @@ export const parseCsvData = (): FinanceRecord[] => {
     totalCost: 202747,
     isInitialCost: true,
     costDescription: 'Custos Iniciais (Sunk Costs)',
-    sortDate: new Date(2024, 0, 1) // Data inicial para ordenação
+    sortDate: new Date(2024, 0, 1)
   });
 
   records.forEach((row: string[]) => {
@@ -126,7 +125,7 @@ export const parseCsvData = (): FinanceRecord[] => {
       accumulatedRevenue: accumulatedRevenue,
       totalCost: totalCost,
       isInitialCost: false,
-      sortDate: new Date(year, monthNumber, 1) // Data para ordenação correta
+      sortDate: new Date(year, monthNumber, 1)
     });
   });
 
@@ -158,9 +157,12 @@ export const getChartData = (data: FinanceRecord[]): ChartData[] => {
 };
 
 export const getUniqueMonths = (data: FinanceRecord[]): string[] => {
+  const monthOrder = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
   const months = new Set<string>();
   data.forEach(record => months.add(record.month));
-  return Array.from(months);
+  
+  // Filtrar apenas meses que existem nos dados e ordenar corretamente
+  return monthOrder.filter(month => months.has(month));
 };
 
 export const getUniqueYears = (data: FinanceRecord[]): number[] => {
