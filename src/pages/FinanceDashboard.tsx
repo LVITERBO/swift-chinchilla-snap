@@ -23,7 +23,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import ClientSummaryCard from '@/components/dashboard/ClientSummaryCard'; // Importando o novo card
+import ClientSummaryCard from '@/components/dashboard/ClientSummaryCard';
 
 const LOCAL_STORAGE_CSV_KEY = 'finance_dashboard_csv_content';
 
@@ -148,19 +148,8 @@ const FinanceDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6"> {/* Revertido para xl:grid-cols-4 */}
-          {/* Novo Card de Visão Geral de Clientes */}
-          <DetailModal
-            title="Detalhes dos Clientes"
-            description="Distribuição de clientes por plano."
-            data={rawTableData}
-          >
-            <ClientSummaryCard
-              data={currentPeriodData}
-              onClick={() => setActiveTab("detailed")} // Interatividade: muda para a aba detalhada
-            />
-          </DetailModal>
-
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6">
+          {/* Cards de Visão Geral */}
           <DetailModal
             title="Detalhes da Receita"
             description="Breakdown completo da receita por período"
@@ -235,6 +224,22 @@ const FinanceDashboard: React.FC = () => {
             <FullRawDataTable data={fullRawData} />
           </TabsContent>
         </Tabs>
+      </div>
+
+      {/* Nova seção para o ClientSummaryCard na parte inferior */}
+      <div className="container mx-auto p-4 sm:p-6 lg:p-8 flex justify-center mb-6">
+        <div className="w-full max-w-sm"> {/* Container para o card reduzido */}
+          <DetailModal
+            title="Detalhes dos Clientes"
+            description="Distribuição de clientes por plano."
+            data={rawTableData}
+          >
+            <ClientSummaryCard
+              data={currentPeriodData}
+              onClick={() => setActiveTab("detailed")}
+            />
+          </DetailModal>
+        </div>
       </div>
 
       {/* Rodapé fixo para os botões de upload e atualização */}
