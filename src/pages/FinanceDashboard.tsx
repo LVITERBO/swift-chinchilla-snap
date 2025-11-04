@@ -3,27 +3,45 @@ import OverviewCard from '@/components/dashboard/OverviewCard';
 import RevenueCostChart from '@/components/dashboard/RevenueCostChart';
 import FinanceTable from '@/components/dashboard/FinanceTable';
 import RawDataTable from '@/components/dashboard/RawDataTable';
-import FullRawDataTable from '@/components/dashboard/FullRawDataTable'; // Importar o novo componente
-import CsvUpload from '@/components/dashboard/CsvUpload'; // Importar o componente de upload
+import FullRawDataTable from '@/components/dashboard/FullRawDataTable';
+import CsvUpload from '@/components/dashboard/CsvUpload';
 import DetailModal from '@/components/ui/detail-modal';
-import { 
-  parseCsvData, 
-  getChartData, 
-  getUniqueMonths, 
-  getUniqueYears, 
-  FinanceRecord, 
-  getRawTableData, 
+import { Button } from '@/components/ui/button'; // Importar o componente Button
+import {
+  parseCsvData,
+  getChartData,
+  getUniqueMonths,
+  getUniqueYears,
+  FinanceRecord,
+  getRawTableData,
   RawTableData,
-  parseFullRawCsvData, // Importar a nova função de parse
-  DEFAULT_CSV_CONTENT // Importar o conteúdo CSV padrão
+  parseFullRawCsvData,
+  DEFAULT_CSV_CONTENT
 } from '@/lib/data-processing';
-import { DollarSign, TrendingUp, TrendingDown, Target } from 'lucide-react';
+import { DollarSign, TrendingUp, TrendingDown, Target, RefreshCw } from 'lucide-react'; // Adicionado RefreshCw icon
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner'; // Importar toast para notificações
+
+const LOCAL_STORAGE_CSV_KEY = 'finance_dashboard_csv_content';
 
 const FinanceDashboard: React.FC = () => {
-  const [currentCsvContent, setCurrentCsvContent] = React.useState<string>(DEFAULT_CSV_CONTENT);
+  const [currentCsvContent, setCurrentCsvContent] = React.useState<string>(() => {
+    // Tenta carregar do localStorage, se não houver, usa o conteúdo padrão
+    if (typeof window !== 'undefined') {
+      const savedCsv = localStorage.getItem(LOCAL_STORAGE_CSV_KEY);
+      return savedCsv || DEFAULT_CSV_CONTENT;
+    }
+    return DEFAULT_CSV_CONTENT;
+  });
+
+  // Salva o CSV no localStorage sempre que ele muda
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(LOCAL_STORAGE_CSV_KEY, currentCsvContent);
+    }
+  }, [currentCsvContent]);
 
   const allFinanceData = React.useMemo(() => parseCsvData(currentCsvContent), [currentCsvContent]);
   const fullRawData = React.useMemo(() => parseFullRawCsvData(currentCsvContent), [currentCsvContent]);
@@ -84,12 +102,27 @@ const FinanceDashboard: React.FC = () => {
     setActiveTab("summary"); // Voltar para a aba de resumo
   };
 
+  const handleRefreshData = () => {
+    // Re-parse o conteúdo CSV atual para forçar a atualização de todos os useMemo
+    setCurrentCsvContent(prevContent => {
+      toast.info("Dados atualizados com sucesso!");
+      return prevContent; // Retorna o mesmo conteúdo para disparar o useEffect e useMemo
+    });
+    setSelectedMonth(undefined); // Resetar filtros
+    setSelectedYear(undefined);
+    setActiveTab("summary"); // Voltar para a aba de resumo
+  };
+
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-      <h1 className="text-3xl font-bold mb-6">Painel Financeiro</h1>
+      <h1 className="text-3xl font-bold mb-6">Painel Financeiro_ARVOH_Receita X Custos</h1>
 
-      <div className="mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 mb-6">
         <CsvUpload onFileUpload={handleFileUpload} />
+        <Button onClick={handleRefreshData} className="flex items-center gap-2">
+          <RefreshCw className="h-4 w-4" />
+          Atualizar Dados
+        </Button>
       </div>
 
       <div className="flex flex-wrap gap-4 mb-6">
@@ -180,19 +213,19 @@ const FinanceDashboard: React.FC = () => {
       </div>
 
       <Tabs defaultValue="summary" value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3"> {/* Alterado para 3 colunas */}
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="summary">Resumo</TabsTrigger>
           <TabsTrigger value="detailed">Tabela Detalhada</TabsTrigger>
-          <TabsTrigger value="full-raw-data">Tabela Completa</TabsTrigger> {/* Nova aba */}
+          <TabsTrigger value="full-raw-data">Tabela Completa</TabsTrigger>
         </TabsList>
         <TabsContent value="summary" className="space-y-4">
           <FinanceTable data={filteredData} />
-          <RevenueCostChart data={chartData} /> {/* Adicionado o gráfico aqui */}
+          <RevenueCostChart data={chartData} />
         </TabsContent>
         <TabsContent value="detailed" className="space-y-4">
           <RawDataTable data={rawTableData} />
         </TabsContent>
-        <TabsContent value="full-raw-data" className="space-y-4"> {/* Conteúdo da nova aba */}
+        <TabsContent value="full-raw-data" className="space-y-4">
           <FullRawDataTable data={fullRawData} />
         </TabsContent>
       </Tabs>
