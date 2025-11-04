@@ -29,7 +29,8 @@ const FinanceTable: React.FC<FinanceTableProps> = ({ data }) => {
               <TableRow>
                 <TableHead>Período</TableHead>
                 <TableHead>Receita Total</TableHead>
-                <TableHead>Custo Total</TableHead>
+                <TableHead>Custo Mensal</TableHead>
+                <TableHead>Custo Acumulado</TableHead>
                 <TableHead className="text-right">Lucro Líquido</TableHead>
               </TableRow>
             </TableHeader>
@@ -44,10 +45,13 @@ const FinanceTable: React.FC<FinanceTableProps> = ({ data }) => {
                     R${entry.accumulatedRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
                   <TableCell className={cn(entry.isInitialCost ? 'text-orange-600' : 'text-red-600')}>
-                    R${entry.totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    R${entry.monthlyCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
-                  <TableCell className={cn("text-right font-medium", (entry.accumulatedRevenue - entry.totalCost) >= 0 ? 'text-green-600' : 'text-red-600')}>
-                    R${(entry.accumulatedRevenue - entry.totalCost).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  <TableCell className={cn("font-semibold", entry.isInitialCost ? 'text-orange-600' : 'text-red-600')}>
+                    R${entry.accumulatedCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </TableCell>
+                  <TableCell className={cn("text-right font-medium", (entry.accumulatedRevenue - entry.accumulatedCost) >= 0 ? 'text-green-600' : 'text-red-600')}>
+                    R${(entry.accumulatedRevenue - entry.accumulatedCost).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
                 </TableRow>
               ))}

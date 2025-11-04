@@ -7,8 +7,8 @@ const CSV_CONTENT = `﻿;Receitas;;;;;;;;;;;;;;;;;Resltado_Custos;;;Contabilidad
 ;out/25;0;;;;;;;R$ 0,00;R$ 0,00;out/25;R$ 36.378,80;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;out/25;36.379;239.126;220;;;40;;26.334;185;2.500;1.000;2.500;3.000;;;600;
 ;nov/25;0;;;;;;;R$ 0,00;R$ 0,00;nov/25;R$ 38.459,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;nov/25;38.459;277.585;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;1.999;;5.000
 ;dez/25;412;257;51;103;R$ 15.349,00;R$ 30.801,00;R$ 46.150,00;R$ 46.150,00;dez/25;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;dez/25;36.959;314.544;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;jan/26;494;309;62;124;R$ 36.961,21;R$ 9.178,60;R$ 46.139,80;R$ 92.289,80;jan/26;R$ 36.919,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;jan/26;36.919;351.463;220;;;;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
-;fev/26;593;370;74;148;R$ 44.353,45;R$ 11.014,32;R$ 55.367,76;R$ 147.657,56;fev/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;fev/26;36.959;388.422;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;jan/26;494;309;62;124;R$ 36.961,21;R$ 9.178,60;R$ 46.139,80;R$ 92.289,80,jan/26;R$ 36.919,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;jan/26;36.919;351.463;220;;;;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
+;fev/26;593;370;74;148;R$ 44.353,45;R$ 11.014,32;R$ 55.367,76;R$ 147.657,56,fev/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;fev/26;36.959;388.422;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
 ;mar/26;711;445;89;178;R$ 53.224,14;R$ 13.217,18;R$ 66.441,31;R$ 214.098,88,mar/26;R$ 36.919,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;mar/26;36.919;425.341;220;;;;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
 ;abr/26;853;533;106;214;R$ 63.868,96;R$ 15.860,62;R$ 79.729,58;R$ 293.828,46,abr/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;abr/26;36.959;462.300;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
 ;mai/26;1024;640;128;256;R$ 76.642,76;R$ 19.032,74;R$ 95.675,49;R$ 389.503,95,mai/26;R$ 36.959,00;R$ 0,00; R$ 149,00 ; R$ 299,00 ;2,01;;mai/26;36.959;499.259;220;;;40;;20.000;200;2.500;1.000;2.500;3.000;2.000;499;;5.000
@@ -32,7 +32,8 @@ export interface FinanceRecord {
   revenuePlanPremium: number;
   totalRevenue: number;
   accumulatedRevenue: number;
-  totalCost: number;
+  monthlyCost: number;
+  accumulatedCost: number;
   isInitialCost: boolean;
   costDescription?: string;
   sortDate: Date;
@@ -51,7 +52,8 @@ export type RawTableData = {
   revenuePlanPremium: number;
   totalRevenue: number;
   accumulatedRevenue: number;
-  totalCost: number;
+  monthlyCost: number;
+  accumulatedCost: number;
   isInitialCost: boolean;
   costDescription?: string;
   netProfit: number;
@@ -92,14 +94,15 @@ export const parseCsvData = (): FinanceRecord[] => {
     revenuePlanPremium: 0,
     totalRevenue: 0,
     accumulatedRevenue: 0,
-    totalCost: 202747,
+    monthlyCost: 202747,
+    accumulatedCost: 202747,
     isInitialCost: true,
     costDescription: 'Custos Iniciais (Sunk Costs)',
     sortDate: new Date(2024, 0, 1)
   });
 
-  // Mapeamento manual dos custos totais conforme tabela fornecida
-  const costMapping: { [key: string]: number } = {
+  // Mapeamento manual dos custos mensais conforme tabela fornecida
+  const monthlyCostMapping: { [key: string]: number } = {
     'out/25': 36379,
     'nov/25': 38459,
     'dez/25': 36959,
@@ -115,6 +118,8 @@ export const parseCsvData = (): FinanceRecord[] => {
     'out/26': 36959
   };
 
+  let accumulatedCost = 202747; // Começa com os custos iniciais
+
   records.forEach((row: string[]) => {
     const periodRaw = row[1]?.trim();
     if (!periodRaw || periodRaw.includes('#DIV/0!')) return;
@@ -129,7 +134,8 @@ export const parseCsvData = (): FinanceRecord[] => {
     const accumulatedRevenue = parseNumber(row[9]);
 
     // Usar o mapeamento manual para garantir valores exatos
-    const totalCost = costMapping[periodRaw] || 0;
+    const monthlyCost = monthlyCostMapping[periodRaw] || 0;
+    accumulatedCost += monthlyCost; // Acumular o custo
 
     financeData.push({
       period: periodRaw,
@@ -140,7 +146,8 @@ export const parseCsvData = (): FinanceRecord[] => {
       revenuePlanPremium: revenuePlanPremium,
       totalRevenue: totalRevenue,
       accumulatedRevenue: accumulatedRevenue,
-      totalCost: totalCost,
+      monthlyCost: monthlyCost,
+      accumulatedCost: accumulatedCost,
       isInitialCost: false,
       sortDate: new Date(year, monthNumber, 1)
     });
@@ -158,10 +165,11 @@ export const getRawTableData = (data: FinanceRecord[]): RawTableData[] => {
     revenuePlanPremium: entry.revenuePlanPremium,
     totalRevenue: entry.totalRevenue,
     accumulatedRevenue: entry.accumulatedRevenue,
-    totalCost: entry.totalCost,
+    monthlyCost: entry.monthlyCost,
+    accumulatedCost: entry.accumulatedCost,
     isInitialCost: entry.isInitialCost,
     costDescription: entry.costDescription,
-    netProfit: entry.accumulatedRevenue - entry.totalCost,
+    netProfit: entry.accumulatedRevenue - entry.accumulatedCost,
   }));
 };
 
@@ -169,7 +177,7 @@ export const getChartData = (data: FinanceRecord[]): ChartData[] => {
   return data.map(entry => ({
     month: entry.period,
     receita: entry.accumulatedRevenue,
-    custo: entry.totalCost,
+    custo: entry.accumulatedCost,
   }));
 };
 

@@ -29,7 +29,7 @@ const FinanceDashboard: React.FC = () => {
   const currentPeriodData = filteredData.length > 0 ? filteredData[filteredData.length - 1] : undefined;
 
   const totalRevenue = currentPeriodData ? currentPeriodData.accumulatedRevenue : 0;
-  const totalCost = currentPeriodData ? currentPeriodData.totalCost : 0;
+  const totalCost = currentPeriodData ? currentPeriodData.accumulatedCost : 0;
   const netProfit = totalRevenue - totalCost;
 
   const chartData = React.useMemo(() => getChartData(filteredData), [filteredData]);
@@ -45,13 +45,14 @@ const FinanceDashboard: React.FC = () => {
   ] : [];
 
   const costDetails = currentPeriodData ? [
-    { label: 'Custo Total', value: formatCurrency(currentPeriodData.totalCost) },
+    { label: 'Custo Mensal', value: formatCurrency(currentPeriodData.monthlyCost) },
+    { label: 'Custo Acumulado', value: formatCurrency(currentPeriodData.accumulatedCost) },
     { label: 'Tipo', value: currentPeriodData.isInitialCost ? 'Custo Inicial' : 'Custo Operacional' },
   ] : [];
 
   const profitDetails = currentPeriodData ? [
     { label: 'Receita Acumulada', value: formatCurrency(totalRevenue) },
-    { label: 'Custo Total', value: formatCurrency(totalCost) },
+    { label: 'Custo Acumulado', value: formatCurrency(totalCost) },
     { label: 'Lucro Líquido', value: formatCurrency(netProfit) },
   ] : [];
 
@@ -127,9 +128,9 @@ const FinanceDashboard: React.FC = () => {
           data={rawTableData}
         >
           <OverviewCard
-            title="Custo Total"
+            title="Custo Acumulado"
             value={formatCurrency(totalCost)}
-            description="Total de despesas incorridas."
+            description="Custo total acumulado até o período."
             icon={<TrendingDown className="h-4 w-4 text-muted-foreground" />}
           />
         </DetailModal>
@@ -142,7 +143,7 @@ const FinanceDashboard: React.FC = () => {
           <OverviewCard
             title="Lucro Líquido"
             value={formatCurrency(netProfit)}
-            description="Receita acumulada menos custo."
+            description="Receita acumulada menos custo acumulado."
             icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
           />
         </DetailModal>

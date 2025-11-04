@@ -35,7 +35,8 @@ const RawDataTable: React.FC<RawDataTableProps> = ({ data }) => {
                 <TableHead>Rec. PREMIUM</TableHead>
                 <TableHead>Rec. Total</TableHead>
                 <TableHead>Rec. Acumulada</TableHead>
-                <TableHead>Custo Total</TableHead>
+                <TableHead>Custo Mensal</TableHead>
+                <TableHead>Custo Acumulado</TableHead>
                 <TableHead>Descrição</TableHead>
                 <TableHead className="text-right">Lucro Líquido</TableHead>
               </TableRow>
@@ -50,7 +51,10 @@ const RawDataTable: React.FC<RawDataTableProps> = ({ data }) => {
                   <TableCell className="text-green-600">{formatCurrency(entry.totalRevenue)}</TableCell>
                   <TableCell className="text-green-600 font-semibold">{formatCurrency(entry.accumulatedRevenue)}</TableCell>
                   <TableCell className={cn("font-semibold", entry.isInitialCost ? 'text-orange-600' : 'text-red-600')}>
-                    {formatCurrency(entry.totalCost)}
+                    {formatCurrency(entry.monthlyCost)}
+                  </TableCell>
+                  <TableCell className={cn("font-bold", entry.isInitialCost ? 'text-orange-600' : 'text-red-600')}>
+                    {formatCurrency(entry.accumulatedCost)}
                   </TableCell>
                   <TableCell className="text-sm text-gray-600">
                     {entry.costDescription || '-'}
