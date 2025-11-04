@@ -133,7 +133,7 @@ const FinanceDashboard: React.FC = () => {
 
       <div className="grid gap-4 lg:grid-cols-2 mb-6">
         <RevenueCostChart data={chartData} />
-        <FinanceTable data={filteredData.slice(-10).reverse()} />
+        <FinanceTable data={filteredData.slice(-10)} />
       </div>
 
       <Tabs defaultValue="summary" className="w-full">
@@ -142,7 +142,7 @@ const FinanceDashboard: React.FC = () => {
           <TabsTrigger value="detailed">Tabela Detalhada</TabsTrigger>
         </TabsList>
         <TabsContent value="summary" className="space-y-4">
-          <FinanceTable data={filteredData.reverse()} />
+          <FinanceTable data={filteredData} />
         </TabsContent>
         <TabsContent value="detailed" className="space-y-4">
           <RawDataTable data={rawTableData} />

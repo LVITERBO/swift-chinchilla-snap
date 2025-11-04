@@ -35,6 +35,7 @@ export interface FinanceRecord {
   totalCost: number;
   isInitialCost: boolean;
   costDescription?: string;
+  sortDate: Date; // Nova propriedade para ordenação correta
 }
 
 export type ChartData = {
@@ -64,6 +65,15 @@ function parseNumber(value: string | undefined): number {
   return isNaN(parsed) ? 0 : parsed;
 }
 
+// Função para converter mês abreviado para número
+function getMonthNumber(monthAbbr: string): number {
+  const months: { [key: string]: number } = {
+    'jan': 0, 'fev': 1, 'mar': 2, 'abr': 3, 'mai': 4, 'jun': 5,
+    'jul': 6, 'ago': 7, 'set': 8, 'out': 9, 'nov': 10, 'dez': 11
+  };
+  return months[monthAbbr.toLowerCase()] || 0;
+}
+
 export const parseCsvData = (): FinanceRecord[] => {
   const records = parse(CSV_CONTENT, {
     delimiter: ';',
@@ -85,7 +95,8 @@ export const parseCsvData = (): FinanceRecord[] => {
     accumulatedRevenue: 0,
     totalCost: 202747,
     isInitialCost: true,
-    costDescription: 'Custos Iniciais (Sunk Costs)'
+    costDescription: 'Custos Iniciais (Sunk Costs)',
+    sortDate: new Date(2024, 0, 1) // Data inicial para ordenação
   });
 
   records.forEach((row: string[]) => {
@@ -94,6 +105,7 @@ export const parseCsvData = (): FinanceRecord[] => {
 
     const [monthAbbr, yearAbbr] = periodRaw.split('/');
     const year = 2000 + parseInt(yearAbbr, 10);
+    const monthNumber = getMonthNumber(monthAbbr);
 
     const revenuePlanGold = parseNumber(row[6]);
     const revenuePlanPremium = parseNumber(row[7]);
@@ -114,10 +126,12 @@ export const parseCsvData = (): FinanceRecord[] => {
       accumulatedRevenue: accumulatedRevenue,
       totalCost: totalCost,
       isInitialCost: false,
+      sortDate: new Date(year, monthNumber, 1) // Data para ordenação correta
     });
   });
 
-  return financeData;
+  // Ordenar por data cronológica
+  return financeData.sort((a, b) => a.sortDate.getTime() - b.sortDate.getTime());
 };
 
 export const getRawTableData = (data: FinanceRecord[]): RawTableData[] => {
