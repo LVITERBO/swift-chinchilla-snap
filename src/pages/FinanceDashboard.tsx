@@ -3,21 +3,37 @@ import OverviewCard from '@/components/dashboard/OverviewCard';
 import RevenueCostChart from '@/components/dashboard/RevenueCostChart';
 import FinanceTable from '@/components/dashboard/FinanceTable';
 import RawDataTable from '@/components/dashboard/RawDataTable';
+import FullRawDataTable from '@/components/dashboard/FullRawDataTable'; // Importar o novo componente
+import CsvUpload from '@/components/dashboard/CsvUpload'; // Importar o componente de upload
 import DetailModal from '@/components/ui/detail-modal';
-import { parseCsvData, getChartData, getUniqueMonths, getUniqueYears, FinanceRecord, getRawTableData, RawTableData } from '@/lib/data-processing';
-import { DollarSign, TrendingUp, TrendingDown, Target } from 'lucide-react'; // Adicionado Target icon
+import { 
+  parseCsvData, 
+  getChartData, 
+  getUniqueMonths, 
+  getUniqueYears, 
+  FinanceRecord, 
+  getRawTableData, 
+  RawTableData,
+  parseFullRawCsvData, // Importar a nova função de parse
+  DEFAULT_CSV_CONTENT // Importar o conteúdo CSV padrão
+} from '@/lib/data-processing';
+import { DollarSign, TrendingUp, TrendingDown, Target } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const FinanceDashboard: React.FC = () => {
-  const allFinanceData = React.useMemo(() => parseCsvData(), []);
+  const [currentCsvContent, setCurrentCsvContent] = React.useState<string>(DEFAULT_CSV_CONTENT);
+
+  const allFinanceData = React.useMemo(() => parseCsvData(currentCsvContent), [currentCsvContent]);
+  const fullRawData = React.useMemo(() => parseFullRawCsvData(currentCsvContent), [currentCsvContent]);
+
   const uniqueMonths = React.useMemo(() => getUniqueMonths(allFinanceData), [allFinanceData]);
   const uniqueYears = React.useMemo(() => getUniqueYears(allFinanceData), [allFinanceData]);
 
   const [selectedMonth, setSelectedMonth] = React.useState<string | undefined>(undefined);
   const [selectedYear, setSelectedYear] = React.useState<string | undefined>(undefined);
-  const [activeTab, setActiveTab] = React.useState<string>("summary"); // Novo estado para a aba ativa
+  const [activeTab, setActiveTab] = React.useState<string>("summary");
 
   const filteredData = React.useMemo(() => {
     return allFinanceData.filter(record => {
@@ -61,9 +77,20 @@ const FinanceDashboard: React.FC = () => {
     ? `${monthDisplayNames[breakEvenRecord.month] || breakEvenRecord.month.toUpperCase()}/${breakEvenRecord.year}`
     : 'N/A';
 
+  const handleFileUpload = (csvContent: string) => {
+    setCurrentCsvContent(csvContent);
+    setSelectedMonth(undefined); // Resetar filtros ao carregar novo CSV
+    setSelectedYear(undefined);
+    setActiveTab("summary"); // Voltar para a aba de resumo
+  };
+
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <h1 className="text-3xl font-bold mb-6">Painel Financeiro</h1>
+
+      <div className="mb-6">
+        <CsvUpload onFileUpload={handleFileUpload} />
+      </div>
 
       <div className="flex flex-wrap gap-4 mb-6">
         <div>
@@ -98,7 +125,7 @@ const FinanceDashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6"> {/* Adicionado xl:grid-cols-4 */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6">
         <DetailModal
           title="Detalhes da Receita"
           description="Breakdown completo da receita por período"
@@ -138,31 +165,35 @@ const FinanceDashboard: React.FC = () => {
           />
         </DetailModal>
 
-        {/* Novo Card de Break Even */}
         <OverviewCard
           title="Break Even"
           value={breakEvenMonth}
           description="Mês em que a receita acumulada supera o custo acumulado."
           icon={<Target className="h-4 w-4 text-muted-foreground" />}
-          valueClassName="text-blue-600 dark:text-blue-400" // Cor azul para o valor
+          valueClassName="text-blue-600 dark:text-blue-400"
           onClick={() => {
-            setActiveTab("detailed"); // Ativa a aba de tabela detalhada
-            setSelectedMonth("jul"); // Filtra para Julho
-            setSelectedYear("2026"); // Filtra para 2026
+            setActiveTab("detailed");
+            setSelectedMonth("jul");
+            setSelectedYear("2026");
           }}
         />
       </div>
 
       <Tabs defaultValue="summary" value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3"> {/* Alterado para 3 colunas */}
           <TabsTrigger value="summary">Resumo</TabsTrigger>
           <TabsTrigger value="detailed">Tabela Detalhada</TabsTrigger>
+          <TabsTrigger value="full-raw-data">Tabela Completa</TabsTrigger> {/* Nova aba */}
         </TabsList>
         <TabsContent value="summary" className="space-y-4">
           <FinanceTable data={filteredData} />
+          <RevenueCostChart data={chartData} /> {/* Adicionado o gráfico aqui */}
         </TabsContent>
         <TabsContent value="detailed" className="space-y-4">
           <RawDataTable data={rawTableData} />
+        </TabsContent>
+        <TabsContent value="full-raw-data" className="space-y-4"> {/* Conteúdo da nova aba */}
+          <FullRawDataTable data={fullRawData} />
         </TabsContent>
       </Tabs>
     </div>
