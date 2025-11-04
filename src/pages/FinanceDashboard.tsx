@@ -115,40 +115,7 @@ const FinanceDashboard: React.FC = () => {
       <div className="container mx-auto p-4 sm:p-6 lg:p-8 flex-grow">
         <h1 className="text-3xl font-bold mb-6">Painel Financeiro_ARVOH_Receita X Custos</h1>
 
-        <div className="flex flex-wrap gap-4 mb-6">
-          <div>
-            <Label htmlFor="select-month">Filtrar por Mês</Label>
-            <Select onValueChange={setSelectedMonth} value={selectedMonth}>
-              <SelectTrigger id="select-month" className="w-[180px]">
-                <SelectValue placeholder="Todos os Meses" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os Meses</SelectItem>
-                {uniqueMonths.map(month => (
-                  <SelectItem key={month} value={month}>
-                    {monthDisplayNames[month] || month.toUpperCase()}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="select-year">Filtrar por Ano</Label>
-            <Select onValueChange={setSelectedYear} value={selectedYear}>
-              <SelectTrigger id="select-year" className="w-[180px]">
-                <SelectValue placeholder="Todos os Anos" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos os Anos</SelectItem>
-                {uniqueYears.map(year => (
-                  <SelectItem key={year} value={String(year)}>{year}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 mb-6"> {/* Alterado para xl:grid-cols-5 */}
           {/* Novo Card de Visão Geral de Clientes */}
           <DetailModal
             title="Detalhes dos Clientes"
