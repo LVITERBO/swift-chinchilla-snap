@@ -8,50 +8,43 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FinanceEntry } from '@/lib/mock-data';
+import { FinanceRecord } from '@/lib/data-processing'; // Usando o novo tipo FinanceRecord
 import { cn } from '@/lib/utils';
 
 interface FinanceTableProps {
-  data: FinanceEntry[];
+  data: FinanceRecord[];
 }
 
 const FinanceTable: React.FC<FinanceTableProps> = ({ data }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Transactions</CardTitle>
-        <CardDescription>A detailed view of your latest financial activities.</CardDescription>
+        <CardTitle>Transações Recentes</CardTitle>
+        <CardDescription>Uma visão detalhada das suas últimas atividades financeiras.</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="max-h-[400px] overflow-y-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead>Período</TableHead>
+                <TableHead>Receita Total</TableHead>
+                <TableHead>Custo Total</TableHead>
+                <TableHead className="text-right">Lucro Líquido</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {data.map((entry) => (
-                <TableRow key={entry.id}>
-                  <TableCell>{entry.date}</TableCell>
-                  <TableCell>{entry.category}</TableCell>
-                  <TableCell>{entry.description}</TableCell>
-                  <TableCell>
-                    <span
-                      className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
-                        entry.type === 'revenue' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                      )}
-                    >
-                      {entry.type.charAt(0).toUpperCase() + entry.type.slice(1)}
-                    </span>
+                <TableRow key={entry.period}>
+                  <TableCell>{entry.period}</TableCell>
+                  <TableCell className="text-green-600">
+                    R${entry.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
-                  <TableCell className={cn("text-right font-medium", entry.type === 'revenue' ? 'text-green-600' : 'text-red-600')}>
-                    {entry.type === 'revenue' ? '+' : '-'}${entry.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  <TableCell className="text-red-600">
+                    R${entry.totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </TableCell>
+                  <TableCell className={cn("text-right font-medium", (entry.totalRevenue - entry.totalCost) >= 0 ? 'text-green-600' : 'text-red-600')}>
+                    R${(entry.totalRevenue - entry.totalCost).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
                 </TableRow>
               ))}
