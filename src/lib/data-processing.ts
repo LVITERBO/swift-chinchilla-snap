@@ -1,4 +1,4 @@
-import { parse } from 'csv-parse/sync';
+import { parse } from 'csv-parse/browser/esm/sync'; // Alterado para a versão de navegador
 
 // Conteúdo do seu arquivo CSV
 const CSV_CONTENT = `﻿;Receitas;;;;;;;;;;;;;;;;;Resltado_Custos;;;Contabilidade;Marca;Jurídico;Infraestrutura;Desenvolvimento;Desenvolvimento;Infraestrutura;Infraestrutura;Marketing;Marketing;Pessoal;Parcerias;Parcerias;Marketing;MKT 
