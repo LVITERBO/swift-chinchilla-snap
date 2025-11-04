@@ -67,6 +67,8 @@ export const parseCsvData = (): FinanceRecord[] => {
   });
 
   const financeData: FinanceRecord[] = [];
+  const SUNK_COST_MARCA = 202747; // Valor dos custos iniciais de Marca (R$202.747)
+  let previousMarcaCumulative = SUNK_COST_MARCA; // Inicializa com o custo afundado como linha de base
 
   records.forEach((row: string[]) => {
     const periodRaw = row[1]?.trim(); // Column B
@@ -79,24 +81,28 @@ export const parseCsvData = (): FinanceRecord[] => {
     const revenuePlanPremium = parseNumber(row[7]); // Column H
     const totalRevenue = parseNumber(row[8]); // Column I
 
-    // Individual cost categories (adjust indices based on your CSV structure)
-    const cost_contabilidade = parseNumber(row[19]); // Column T
-    const cost_marca = parseNumber(row[20]); // Column U
-    const cost_juridico = parseNumber(row[21]); // Column V
-    const cost_infraestrutura_1 = parseNumber(row[22]); // Column W
-    const cost_desenvolvimento_1 = parseNumber(row[23]); // Column X
-    const cost_desenvolvimento_2 = parseNumber(row[24]); // Column Y
-    const cost_infraestrutura_2 = parseNumber(row[25]); // Column Z
-    const cost_marketing_1 = parseNumber(row[26]); // Column AA
-    const cost_pessoal = parseNumber(row[27]); // Column AB
-    const cost_parcerias_1 = parseNumber(row[28]); // Column AC
-    const cost_marketing_2 = parseNumber(row[29]); // Column AD
-    const cost_parcerias_2 = parseNumber(row[30]); // Column AE
-    const cost_mkt = parseNumber(row[31]); // Column AF
+    // Colunas de custo corrigidas (começando da coluna S, que é row[18])
+    const cost_contabilidade = parseNumber(row[18]); // Column S
+    const currentMarcaCumulative = parseNumber(row[19]); // Column T (valor cumulativo da Marca)
+    const cost_juridico = parseNumber(row[20]); // Column U
+    const cost_infraestrutura_1 = parseNumber(row[21]); // Column V
+    const cost_desenvolvimento_1 = parseNumber(row[22]); // Column W
+    const cost_desenvolvimento_2 = parseNumber(row[23]); // Column X
+    const cost_infraestrutura_2 = parseNumber(row[24]); // Column Y
+    const cost_marketing_1 = parseNumber(row[25]); // Column Z
+    const cost_pessoal = parseNumber(row[26]); // Column AA
+    const cost_parcerias_1 = parseNumber(row[27]); // Column AB
+    const cost_marketing_2 = parseNumber(row[28]); // Column AC
+    const cost_parcerias_2 = parseNumber(row[29]); // Column AD
+    const cost_mkt = parseNumber(row[30]); // Column AE
+
+    // Calcular o custo mensal da Marca, subtraindo o valor cumulativo anterior
+    const cost_marca_monthly = Math.max(0, currentMarcaCumulative - previousMarcaCumulative);
+    previousMarcaCumulative = currentMarcaCumulative; // Atualiza o valor cumulativo para a próxima iteração
 
     const totalCost =
       cost_contabilidade +
-      cost_marca +
+      cost_marca_monthly + // Usar o custo mensal ajustado da Marca
       cost_juridico +
       cost_infraestrutura_1 +
       cost_infraestrutura_2 +
@@ -120,7 +126,7 @@ export const parseCsvData = (): FinanceRecord[] => {
       totalCost: totalCost,
       costs: {
         contabilidade: cost_contabilidade,
-        marca: cost_marca,
+        marca: cost_marca_monthly, // Armazenar o custo mensal ajustado da Marca
         juridico: cost_juridico,
         infraestrutura: cost_infraestrutura_1 + cost_infraestrutura_2,
         desenvolvimento: cost_desenvolvimento_1 + cost_desenvolvimento_2,
