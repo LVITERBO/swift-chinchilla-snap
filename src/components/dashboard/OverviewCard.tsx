@@ -8,9 +8,10 @@ interface OverviewCardProps extends React.HTMLAttributes<HTMLDivElement> {
   description: string;
   icon?: React.ReactNode;
   onClick?: () => void;
+  valueClassName?: string; // Nova propriedade para a classe do valor
 }
 
-const OverviewCard: React.FC<OverviewCardProps> = ({ title, value, description, icon, onClick, className, ...props }) => {
+const OverviewCard: React.FC<OverviewCardProps> = ({ title, value, description, icon, onClick, className, valueClassName, ...props }) => {
   return (
     <Card 
       className={cn("flex flex-col cursor-pointer hover:shadow-lg transition-shadow", className)} 
@@ -22,7 +23,7 @@ const OverviewCard: React.FC<OverviewCardProps> = ({ title, value, description, 
         {icon}
       </CardHeader>
       <CardContent className="flex-grow flex flex-col justify-between">
-        <div className="text-2xl font-bold">{value}</div>
+        <div className={cn("text-2xl font-bold", valueClassName)}>{value}</div>
         <p className="text-xs text-muted-foreground mt-1">{description}</p>
       </CardContent>
     </Card>

@@ -5,7 +5,7 @@ import FinanceTable from '@/components/dashboard/FinanceTable';
 import RawDataTable from '@/components/dashboard/RawDataTable';
 import DetailModal from '@/components/ui/detail-modal';
 import { parseCsvData, getChartData, getUniqueMonths, getUniqueYears, FinanceRecord, getRawTableData, RawTableData } from '@/lib/data-processing';
-import { DollarSign, TrendingUp, TrendingDown, Table } from 'lucide-react';
+import { DollarSign, TrendingUp, TrendingDown, Target } from 'lucide-react'; // Adicionado Target icon
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -17,11 +17,12 @@ const FinanceDashboard: React.FC = () => {
 
   const [selectedMonth, setSelectedMonth] = React.useState<string | undefined>(undefined);
   const [selectedYear, setSelectedYear] = React.useState<string | undefined>(undefined);
+  const [activeTab, setActiveTab] = React.useState<string>("summary"); // Novo estado para a aba ativa
 
   const filteredData = React.useMemo(() => {
     return allFinanceData.filter(record => {
-      const monthMatch = selectedMonth ? record.month === selectedMonth : true;
-      const yearMatch = selectedYear ? record.year === parseInt(selectedYear, 10) : true;
+      const monthMatch = selectedMonth && selectedMonth !== "all" ? record.month === selectedMonth : true;
+      const yearMatch = selectedYear && selectedYear !== "all" ? record.year === parseInt(selectedYear, 10) : true;
       return monthMatch && yearMatch;
     });
   }, [allFinanceData, selectedMonth, selectedYear]);
@@ -37,25 +38,6 @@ const FinanceDashboard: React.FC = () => {
 
   const formatCurrency = (value: number) => `R$${value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-  const revenueDetails = currentPeriodData ? [
-    { label: 'Plano GOLD', value: formatCurrency(currentPeriodData.revenuePlanGold) },
-    { label: 'Plano PREMIUM', value: formatCurrency(currentPeriodData.revenuePlanPremium) },
-    { label: 'Receita Mensal', value: formatCurrency(currentPeriodData.totalRevenue) },
-    { label: 'Receita Acumulada', value: formatCurrency(currentPeriodData.accumulatedRevenue) },
-  ] : [];
-
-  const costDetails = currentPeriodData ? [
-    { label: 'Custo Mensal', value: formatCurrency(currentPeriodData.monthlyCost) },
-    { label: 'Custo Acumulado', value: formatCurrency(currentPeriodData.accumulatedCost) },
-    { label: 'Tipo', value: currentPeriodData.isInitialCost ? 'Custo Inicial' : 'Custo Operacional' },
-  ] : [];
-
-  const profitDetails = currentPeriodData ? [
-    { label: 'Receita Acumulada', value: formatCurrency(totalRevenue) },
-    { label: 'Custo Acumulado', value: formatCurrency(totalCost) },
-    { label: 'Lucro Líquido', value: formatCurrency(netProfit) },
-  ] : [];
-
   const monthDisplayNames: { [key: string]: string } = {
     'jan': 'Janeiro',
     'fev': 'Fevereiro',
@@ -70,6 +52,14 @@ const FinanceDashboard: React.FC = () => {
     'nov': 'Novembro',
     'dez': 'Dezembro'
   };
+
+  // Calcular o mês de Break Even
+  const breakEvenRecord = allFinanceData.find(
+    (record) => record.accumulatedRevenue >= record.accumulatedCost
+  );
+  const breakEvenMonth = breakEvenRecord
+    ? `${monthDisplayNames[breakEvenRecord.month] || breakEvenRecord.month.toUpperCase()}/${breakEvenRecord.year}`
+    : 'N/A';
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -108,7 +98,7 @@ const FinanceDashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6"> {/* Adicionado xl:grid-cols-4 */}
         <DetailModal
           title="Detalhes da Receita"
           description="Breakdown completo da receita por período"
@@ -147,14 +137,23 @@ const FinanceDashboard: React.FC = () => {
             icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
           />
         </DetailModal>
+
+        {/* Novo Card de Break Even */}
+        <OverviewCard
+          title="Break Even"
+          value={breakEvenMonth}
+          description="Mês em que a receita acumulada supera o custo acumulado."
+          icon={<Target className="h-4 w-4 text-muted-foreground" />}
+          valueClassName="text-blue-600 dark:text-blue-400" // Cor azul para o valor
+          onClick={() => {
+            setActiveTab("detailed"); // Ativa a aba de tabela detalhada
+            setSelectedMonth("jul"); // Filtra para Julho
+            setSelectedYear("2026"); // Filtra para 2026
+          }}
+        />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 mb-6">
-        <RevenueCostChart data={chartData} />
-        <FinanceTable data={filteredData.slice(-10)} />
-      </div>
-
-      <Tabs defaultValue="summary" className="w-full">
+      <Tabs defaultValue="summary" value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="summary">Resumo</TabsTrigger>
           <TabsTrigger value="detailed">Tabela Detalhada</TabsTrigger>
